@@ -71,7 +71,8 @@ Module.runModule = function (source, filename, activityOrService) {
 	if (!Module.main) {
 		Module.main = module;
 	}
-	filename = filename.replace('Resources/', '/'); // normalize back to absolute paths (which really are relative to Resources under the hood)
+	filename = filename.replace('Resources/', ''); // normalize back to absolute paths (which really are relative to Resources under the hood)
+	console.log(filename);
 	module.load(filename, source);
 	return module;
 };
@@ -98,7 +99,7 @@ Module.prototype.load = function (filename, source) {
 	this.paths = this.nodeModulesPaths(this.path);
 
 	if (!source) {
-		source = assets.readAsset('Resources' + filename);
+		source = assets.readAsset(path.join('Resources', filename));
 	}
 
 	// Stick it in the cache
@@ -422,6 +423,7 @@ Module.prototype.nodeModulesPaths = function (startDir) {
  */
 Module.prototype.loadAsFileOrDirectory = function (normalizedPath, context) {
 	// a. LOAD_AS_FILE(Y + X)
+	console.log(normalizedPath);
 	var loaded = this.loadAsFile(normalizedPath, context);
 	if (loaded) {
 		return loaded;
@@ -560,7 +562,7 @@ Module.prototype.loadAsDirectory = function (id, context) {
  */
 Module.prototype._runScript = function (source, filename) {
 	var self = this,
-		url = 'app://' + filename;
+		url = 'app:///' + filename;
 
 	function require(path, context) {
 		return self.require(path, context);
@@ -620,7 +622,8 @@ var fileIndex;
  * @return {Boolean}         true if the filename exists in the index.json
  */
 Module.prototype.filenameExists = function (filename) {
-	filename = 'Resources' + filename; // When we actually look for files, assume "Resources/" is the root
+	console.log('filenameExists');
+	filename = path.join('Resources', filename); // When we actually look for files, assume "Resources/" is the root
 	if (!fileIndex) {
 		var json = assets.readAsset('index.json');
 		fileIndex = JSON.parse(json);
