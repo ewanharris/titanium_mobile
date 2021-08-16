@@ -189,16 +189,20 @@ jobs:
     name: Package
     env:
       SDK_BUILD_CACHE_DIR: ${{ github.workspace }}/.native-modules
+    outputs:
+      vtag: ${{ steps.vtag.outputs.vtag }}
     needs: [android, ios, js]
     steps:
     - uses: actions/checkout@v2
 
     - name: Create version tag
+      id: vtag
       run: |
         PACKAGE_VERSION=$(sed -n 's/^ *"version": *"//p' package.json | tr -d '"' | tr -d ',' | tr -d '[[:space:]]')
         TIMESTAMP=`date +'%Y%m%d%H%M%S'`
         VTAG="${PACKAGE_VERSION}.v${TIMESTAMP}"
         echo "vtag=${VTAG}" >> $GITHUB_ENV
+        echo "::set-output name=vtag::${VTAG}"
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
@@ -293,3 +297,57 @@ jobs:
         name: |
           android-build
           ios-build
+
+  ios-tests:
+    runs-on: macos-latest
+    name: iOS Tests
+    env:
+      vtag: ${{ needs.package.outputs.vtag }}
+    needs: [package]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Use JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Cache Node.js modules
+      id: node-cache
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node-modules-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-modules-
+          ${{ runner.OS }}-
+
+    - run: npm ci
+      name: Install dependencies
+      if: steps.node-cache.outputs.cache-hit != 'true'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-osx
+
+    - name: Install SDK
+      run: npm run deploy -- ${{ mobilesdk-${{ env.vtag }}-osx }} --select
+
+    - name: Run tests
+      run: npm run test:integration -- ios -F iphone
