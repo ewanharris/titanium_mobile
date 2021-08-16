@@ -330,6 +330,50 @@ jobs:
       name: Install dependencies
       if: steps.node-cache.outputs.cache-hit != 'true'
 
+    - uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-osx
+
+    - name: Install SDK
+      run: npm run deploy -- mobilesdk-${{ env.vtag }}-osx.zip --select
+
+    - name: Run tests
+      run: npm run test:integration -- ios -F iphone
+
+  android-tests:
+    runs-on: macos-latest
+    name: Android Tests
+    env:
+      vtag: ${{ needs.package.outputs.vtag }}
+    needs: [package]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Use JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Cache Node.js modules
+      id: node-cache
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node-modules-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-modules-
+          ${{ runner.OS }}-
+
+    - run: npm ci
+      name: Install dependencies
+      if: steps.node-cache.outputs.cache-hit != 'true'
+
     - name: Cache Gradle packages
       uses: actions/cache@v2
       with:
@@ -347,5 +391,11 @@ jobs:
     - name: Install SDK
       run: npm run deploy -- mobilesdk-${{ env.vtag }}-osx.zip --select
 
-    - name: Run tests
-      run: npm run test:integration -- ios -F iphone
+
+    - name: Build and Test
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        target: playstore
+        script: npm run test:integration -- ios -F android
+        disable-animations: false # defaulting to true, the commands sent to emulator to do this sometimes run too quickly after boot and cause "adb: device offline" failures
