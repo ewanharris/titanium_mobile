@@ -345,7 +345,7 @@ jobs:
         name: mobilesdk-${{ env.vtag }}-osx
 
     - name: Install SDK
-      run: npm run deploy -- ${{ mobilesdk-${{ env.vtag }}-osx }} --select
+      run: npm run deploy -- mobilesdk-${{ env.vtag }}-osx --select
 
     - name: Run tests
       run: npm run test:integration -- ios -F iphone
