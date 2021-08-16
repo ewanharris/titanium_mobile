@@ -397,5 +397,5 @@ jobs:
       with:
         api-level: 30
         target: playstore
-        script: npm run test:integration -- ios -F android
+        script: npm run test:integration -- android
         disable-animations: false # defaulting to true, the commands sent to emulator to do this sometimes run too quickly after boot and cause "adb: device offline" failures
