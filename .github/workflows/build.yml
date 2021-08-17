@@ -399,7 +399,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Pixel 2
+        profile: Nexus 5
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
         disable-animations: false
