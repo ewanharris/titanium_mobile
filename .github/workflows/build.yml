@@ -399,7 +399,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        skin: 1080x1920
+        profile: 1080x1920
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
         disable-animations: false
@@ -418,7 +418,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        skin: 1080x1920
+        profile: 1080x1920
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
         script: npm run test:integration -- android
