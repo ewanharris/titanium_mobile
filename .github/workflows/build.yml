@@ -384,23 +384,24 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: AVD cache
-      uses: actions/cache@v2
-      id: avd-cache
-      with:
-        path: |
-          ~/.android/avd/*
-          ~/.android/adb*
-        key: avd
+    # - name: AVD cache
+    #   uses: actions/cache@v2
+    #   id: avd-cache
+    #   with:
+    #     path: |
+    #       ~/.android/avd/*
+    #       ~/.android/adb*
+        # key: avd
 
     - name: create AVD and generate snapshot for caching
-      if: steps.avd-cache.outputs.cache-hit != 'true'
+      # if: steps.avd-cache.outputs.cache-hit != 'true'
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 30
         force-avd-creation: false
+        skin: 1080x1920
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-        target: playstore
+        target: google_apis_playstore
         disable-animations: false
         script: echo "Generated AVD snapshot for caching."
 
@@ -417,7 +418,8 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
+        skin: 1080x1920
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-        target: playstore
+        target: google_apis_playstore
         script: npm run test:integration -- android
         disable-animations: false 
