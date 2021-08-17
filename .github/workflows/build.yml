@@ -391,7 +391,7 @@ jobs:
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd
+        key: avd-Nexus5-30-x86_64
 
     - name: create AVD and generate snapshot for caching
       if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -400,6 +400,7 @@ jobs:
         api-level: 30
         force-avd-creation: false
         profile: Nexus 5
+        arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
         disable-animations: false
@@ -418,7 +419,8 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Pixel 2
+        profile: Nexus 5
+        arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
         script: npm run test:integration -- android
