@@ -399,7 +399,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Pixel XL
+        profile: pixel_xl
         arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
@@ -419,7 +419,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Pixel XL
+        profile: pixel_xl
         arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
