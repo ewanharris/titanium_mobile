@@ -391,7 +391,7 @@ jobs:
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd-Nexus5-30-x86_64
+        key: avd-PixelXL-30-x86_64
 
     - name: create AVD and generate snapshot for caching
       if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -399,7 +399,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Nexus 5
+        profile: Pixel XL
         arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
@@ -419,7 +419,7 @@ jobs:
       with:
         api-level: 30
         force-avd-creation: false
-        profile: Nexus 5
+        profile: Pixel XL
         arch: x86_64
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         target: google_apis_playstore
