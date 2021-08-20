@@ -10,6 +10,9 @@ const exec = promisify(require('child_process').exec); // eslint-disable-line se
  */
 async function getHash(cwd) {
 	const { stdout } = await exec('git rev-parse --short --no-color HEAD', { cwd });
+	console.log('==================');
+	console.log(stdout);
+	console.log('==================');
 	return stdout.trim(); // drop leading 'commit ', just take 7-character sha
 }
 
