@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - run: ls ./
-      - run: ls ./github
       - name: Android Build
         uses: ./.github/workflows/build-android.yml
         with:
