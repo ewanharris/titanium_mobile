@@ -9,10 +9,14 @@ on:
 
 jobs:
   android:
-      uses: ./.github/workflows/build-android.yml@actions_tests
-      with:
-        node-version: '12.x'
-        java-version: '11'
+    runs-on: ubuntu-18.04
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      USE_CCACHE: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: Android build
+        uses: ./.github/actions/build-android
 
   ios:
     runs-on: macos-11
