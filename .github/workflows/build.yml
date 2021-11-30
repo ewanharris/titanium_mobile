@@ -9,14 +9,10 @@ on:
 
 jobs:
   android:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Android Build
-        uses: ./.github/workflows/build-android.yml
-        with:
-          node-version: '12.x'
-          java-version: '11'
+      uses: ./.github/workflows/build-android.yml
+      with:
+        node-version: '12.x'
+        java-version: '11'
 
   ios:
     runs-on: macos-11
