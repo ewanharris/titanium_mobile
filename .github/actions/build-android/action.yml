@@ -17,6 +17,7 @@ runs:
         sudo dpkg --add-architecture i386
         sudo apt-get update -y -qq
         sudo apt-get install -y -qq gperf libatomic1:i386 libc6:i386 libncurses5:i386 libstdc++6:i386
+      shell: bash
 
     - name: Setup Node.js
       uses: actions/setup-node@v1
@@ -39,9 +40,10 @@ runs:
           ${{ runner.OS }}-node-modules-
           ${{ runner.OS }}-
 
-    - run: npm ci
-      name: Install dependencies
+    - name: Install dependencies
       if: steps.node-cache.outputs.cache-hit != 'true'
+      run: npm ci
+      shell: bash
 
     - name: Cache Gradle packages
       uses: actions/cache@v2
@@ -53,11 +55,13 @@ runs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - run: npm run lint:android
-      name: Lint
+    - name: Lint
+      run: npm run lint:android
+      shell: bash
 
     - name: Install ccache
       run: brew install ccache
+      shell: bash
 
     - name: Retrieve ccache
       uses: actions/cache@v2
@@ -75,11 +79,13 @@ runs:
         restore-keys: |
           libv8-
 
-    - run: npm run build:android
-      name: Build
+    - name: Build
+      run: npm run build:android
+      shell: bash
 
     - name: Show summary of ccache configuration and statistics counters
       run: ccache --show-stats
+      shell: bash
 
     - name: 'Package build output'
       run: >
@@ -90,6 +96,7 @@ runs:
         dist/android/libv8/
         dist/android/titanium.bindings.json
         dist/tmp/common
+      shell: bash
 
     - uses: actions/upload-artifact@v2
       with:
@@ -103,3 +110,5 @@ runs:
       run: |
         rm -f ~/.gradle/caches/modules-2/modules-2.lock
         rm -f ~/.gradle/caches/modules-2/gc.properties
+      shell: bash
+
