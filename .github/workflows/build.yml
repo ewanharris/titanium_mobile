@@ -15,8 +15,8 @@ jobs:
       - name: Android Build
         uses: ./.github/workflows/build/android.yml
         with:
-          - node-version: '12.x'
-          - java-version: '11'
+          node-version: '12.x'
+          java-version: '11'
 
   ios:
     runs-on: macos-11
