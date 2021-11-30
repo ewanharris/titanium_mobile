@@ -79,7 +79,7 @@ jobs:
         VTAG="${PACKAGE_VERSION}.v${TIMESTAMP}"
         echo "vtag=${VTAG}" >> $GITHUB_ENV
     - name: Package
-      uses: ./.github/actions/build-android
+      uses: ./.github/actions/package
       with:
         node-version: '12.x'
         java-version: '11'

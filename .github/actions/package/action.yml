@@ -82,21 +82,21 @@ runs:
     - name: Archive OSX artifact
       uses: actions/upload-artifact@v2
       with:
-        name: mobilesdk-${{ env.vtag }}-osx
+        name: mobilesdk-${{ inputs.vtag }}-osx
         path: |
           dist/mobilesdk-*-osx.zip
 
     - name: Archive win32 artifact
       uses: actions/upload-artifact@v2
       with:
-        name: mobilesdk-${{ env.vtag }}-win32
+        name: mobilesdk-${{ inputs.vtag }}-win32
         path: |
           dist/mobilesdk-*-win32.zip
 
     - name: Archive Linux artifact
       uses: actions/upload-artifact@v2
       with:
-        name: mobilesdk-linux.zip
+        name:  mobilesdk-${{ inputs.vtag }}-linux
         path: |
           dist/mobilesdk-*-linux.zip
 
