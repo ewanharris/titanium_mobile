@@ -15,7 +15,7 @@ jobs:
       - run: ls ./
       - run: ls ./github
       - name: Android Build
-        uses: ./.github/workflows/build/android.yml
+        uses: ./.github/workflows/build-android.yml
         with:
           node-version: '12.x'
           java-version: '11'
