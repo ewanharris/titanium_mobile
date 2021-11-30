@@ -33,7 +33,9 @@ jobs:
   package:
     runs-on: macos-11
     name: Package
-    environment: Release
+    outputs:
+      vtag:
+        ${{ steps.vtag.ouputs.vtag }}
     env:
       SDK_BUILD_CACHE_DIR: ${{ github.workspace }}/.native-modules
       DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
@@ -41,13 +43,49 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Create version tag
+      id: vtag
       run: |
         PACKAGE_VERSION=$(sed -n 's/^ *"version": *"//p' package.json | tr -d '"' | tr -d ',' | tr -d '[[:space:]]')
-        VTAG="${PACKAGE_VERSION}.v${GA}"
+        VTAG="${PACKAGE_VERSION}.GA"
         echo "vtag=${VTAG}" >> $GITHUB_ENV
+        echo ::set-output name=vtag::${VTAG}
     - name: Package
       uses: ./.github/actions/package
       with:
         node-version: '12.x'
         java-version: '11'
         vtag: ${{ env.vtag }}
+
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    environment: Release
+    needs: [package]
+    env:
+      vtag: ${{ needs.package.outputs.vtag }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download Linux artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-linux
+    - name: Download MacOS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-osx
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-win32
+    - name: Create and push tag
+      run: |
+        TAG_VERSION=$( echo ${{ env.vtag }} | tr '.' '_' )
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git tag "${TAG_VERSION}"
+        git push origin '${TAG_VERSION}'
+    - name: Upload SDK zips
+      uses: softprops/action-gh-release@v1
+      with:
+        files: mobilesdk-${{ env.vtag }}-*
+
