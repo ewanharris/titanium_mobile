@@ -90,4 +90,5 @@ jobs:
       with:
         files: mobilesdk-${{ env.vtag }}-*
         tag_name: ${{ env.clean-tag }}
+        name: ${{ env.vtag }}
 
