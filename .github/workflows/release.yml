@@ -84,8 +84,10 @@ jobs:
         git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
         git tag "${TAG_VERSION}"
         git push origin "${TAG_VERSION}"
+        echo "clean-tag=${TAG_VERSION}" >> $GITHUB_ENV
     - name: Upload SDK zips
       uses: softprops/action-gh-release@v1
       with:
         files: mobilesdk-${{ env.vtag }}-*
+        tag_name: ${{ env.clean-tag }}
 
