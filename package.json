@@ -1,7 +1,7 @@
 {
   "name": "titanium-mobile",
   "description": "Appcelerator Titanium Mobile",
-  "version": "10.2.0",
+  "version": "10.2.1",
   "moduleApiVersion": {
     "iphone": "2",
     "android": "4"
@@ -130,7 +130,7 @@
     "commander": "^8.2.0",
     "commitizen": "^4.2.4",
     "conventional-changelog-cli": "^2.1.1",
-    "core-js": "^3.18.3",
+    "core-js": "^3.20.0",
     "cz-conventional-changelog": "^3.3.0",
     "danger": "^10.6.6",
     "dateformat": "^5.0.1",
