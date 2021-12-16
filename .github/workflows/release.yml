@@ -7,15 +7,15 @@ on:
         description: The branch to release from
         required: true
         default: master
-    release-type:
-      description: The type of release to perform
-      required: true
-      default: GA
-      type: choice
-      options:
-        - GA
-        - RC
-        - Beta
+      release-type:
+        description: The type of release to perform
+        required: true
+        default: GA
+        type: choice
+        options:
+          - GA
+          - RC
+          - Beta
 
 
 jobs:
