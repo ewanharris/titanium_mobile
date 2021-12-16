@@ -46,7 +46,7 @@ jobs:
               repo: context.repo.repo,
             });
 
-            const releases = github.paginate(releaseMeta);
+            const releases = await github.paginate(releaseMeta);
 
             for (const release of releases) {
               if (release.name === process.env.vtag) {
@@ -145,4 +145,11 @@ jobs:
         files: mobilesdk-${{ env.vtag }}-*
         tag_name: ${{ env.clean-tag }}
         name: ${{ env.vtag }}
+    - name: Bump version
+      run: |
+        npm version patch --no-git-tag-version
+        git add package.json
+        git add package-lock.json
+        git commit -m "chore(release): bump version"
+        git push
 
