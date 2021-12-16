@@ -46,7 +46,7 @@ jobs:
               repo: context.repo.repo,
             });
 
-            const releases = octokit.paginate(releaseMeta);
+            const releases = github.paginate(releaseMeta);
 
             for (const release of releases) {
               if (release.name === process.env.vtag) {
