@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Release
     environment: Release
-    needs: [package]
+    needs: [validate, package]
     env:
       vtag: ${{ needs.validate.outputs.vtag }}
     steps:
