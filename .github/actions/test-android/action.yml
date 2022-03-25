@@ -1,0 +1,84 @@
+name: Android Tests
+description: Runs the unit tests against Android
+
+inputs:
+  node-version:
+    description: The version of Node.js to use
+    required: true
+  java-version:
+    description: The version of Java to use
+    required: true
+  vtag:
+    description: The version tag of the SDK artifact
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: ${{ inputs.java-version }}
+
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: AVD cache
+      uses: actions/cache@v2
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-PixelXL-30-x86_64
+
+    - name: create AVD and generate snapshot for caching
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        force-avd-creation: false
+        profile: pixel_xl
+        arch: x86_64
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        target: google_apis_playstore
+        disable-animations: false
+        script: echo "Generated AVD snapshot for caching."
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-osx
+
+    - name: Install SDK
+      run: npm run deploy -- mobilesdk-${{ env.vtag }}-osx.zip --select
+      shell: bash
+
+    - name: Build and Test
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        force-avd-creation: false
+        profile: pixel_xl
+        arch: x86_64
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        target: google_apis_playstore
+        script: npm run test:integration -- android
+        disable-animations: false 
