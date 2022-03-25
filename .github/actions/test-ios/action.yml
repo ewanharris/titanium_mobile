@@ -1,0 +1,44 @@
+name: iOS Tests
+description: Runs the unit tests against iOS
+
+inputs:
+  node-version:
+    description: The version of Node.js to use
+    required: true
+  java-version:
+    description: The version of Java to use
+    required: true
+  vtag:
+    description: The version tag of the SDK artifact
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: ${{ inputs.java-version }}
+
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: mobilesdk-${{ env.vtag }}-osx
+
+    - name: Install SDK
+      run: npm run deploy -- mobilesdk-${{ env.vtag }}-osx.zip --select
+      shell: bash
+
+    - name: Run tests
+      run: npm run test:integration -- ios -F iphone
+      shell: bash

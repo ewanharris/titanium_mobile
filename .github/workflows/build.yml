@@ -108,3 +108,21 @@ jobs:
           node-version: '16.x'
           java-version: '11'
           vtag: ${{ env.vtag }}
+
+  ios-tests:
+    runs-on: macos-latest
+    name: iOS Tests
+    env:
+      vtag: ${{ needs.package.outputs.vtag }}
+    needs: [package]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run tests
+        uses: ./.github/actions/test-ios
+        with:
+          node-version: '16.x'
+          java-version: '11'
+          vtag: ${{ env.vtag }}
