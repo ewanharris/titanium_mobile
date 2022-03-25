@@ -4,7 +4,7 @@ on:
     branches:
     - master
     - "[0-9]+_[0-9]+_X"
-    - actions_tests
+    - run_tests_in_actions # TODO remove when done
   pull_request:
 
 jobs:
