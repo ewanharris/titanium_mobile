@@ -66,7 +66,7 @@ runs:
           native-modules-
 
     - name: Package
-      run: npm run package -- --version-tag ${{ inputs.vtag }} --all
+      run: npm run package -- --version-tag ${{ inputs.vtag }} --all --skip-zip
       shell: bash
 
     - name: Archive OSX artifact
@@ -74,21 +74,21 @@ runs:
       with:
         name: mobilesdk-${{ inputs.vtag }}-osx
         path: |
-          dist/mobilesdk-*-osx.zip
+          dist/mobilesdk-*-osx/
 
     - name: Archive win32 artifact
       uses: actions/upload-artifact@v2
       with:
         name: mobilesdk-${{ inputs.vtag }}-win32
         path: |
-          dist/mobilesdk-*-win32.zip
+          dist/mobilesdk-*-win32/
 
     - name: Archive Linux artifact
       uses: actions/upload-artifact@v2
       with:
         name: mobilesdk-${{ inputs.vtag }}-linux
         path: |
-          dist/mobilesdk-*-linux.zip
+          dist/mobilesdk-*-linux/
 
     - name: Cleanup Gradle Cache
       # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
