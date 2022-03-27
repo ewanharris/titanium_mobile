@@ -4,7 +4,7 @@ on:
     branches:
     - master
     - "[0-9]+_[0-9]+_X"
-    - actions_tests
+    - dont_zip
   pull_request:
 
 jobs:
